@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Keyboard, FlatList, StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import Autocomplete from 'react-native-autocomplete-input';
 import useResults from './hooks/useResults';
@@ -64,6 +64,7 @@ export default function App() {
             searchApi(search)
             setSearch('')
             setFilteredPkmList([]);
+            Keyboard.dismiss();
           }}
           placeholder="Enter Pokemon Name"
           renderItem={({item}) => (
@@ -73,6 +74,8 @@ export default function App() {
                 searchApi(item);
                 setSearch('')
                 setFilteredPkmList([]);
+                Keyboard.dismiss();
+                
               }}>
               <Text style={styles.itemText}>
                   {item}
