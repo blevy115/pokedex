@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import pokeapi from '../../api/pokeapi';
+import combineDuplicates from '../functions/combine-duplicates';
 
 const SearchTile = ({ pokemon }) => {
   const { container, image, table } = styles;
@@ -10,18 +11,22 @@ const SearchTile = ({ pokemon }) => {
   let tempWeakness = [];
   let tempStrength = [];
 
-
   const determineTypeEffectiveness = async( type ) => {
     try {
       const response = await pokeapi.get(`type/${type}`)
       const newWeakness = response.data.damage_relations.double_damage_from.forEach((item, i) => {
         tempWeakness = [...tempWeakness, item.name]
       });
-      setWeakness(tempWeakness);
       const newStrength = response.data.damage_relations.half_damage_from.forEach((item, i) => {
         tempStrength = [...tempStrength, item.name]
       });
-      setStrength(tempStrength);
+      // compare and combine types
+      tempWeaknessWithDiff = tempWeakness.filter(type => !tempStrength.includes(type)).sort();
+      tempStrengthWithDiff = tempStrength.filter(type => !tempWeakness.includes(type)).sort();
+      combineDuplicates(tempWeaknessWithDiff)
+      combineDuplicates(tempStrengthWithDiff)
+      setWeakness(tempWeaknessWithDiff);
+      setStrength(tempStrengthWithDiff);
     } catch (err) {
       console.log(err);
     }
